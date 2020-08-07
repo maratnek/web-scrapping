@@ -2,6 +2,7 @@ const http = require('http');
 const csv = require('csv-parser');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const fastcsv = require('fast-csv');
 
 const Nightmare = require('nightmare')
 const cheerio = require('cheerio');
@@ -38,17 +39,17 @@ let csvData = [];
 
 (async ()=>{
 const csvWriter = createCsvWriter({
-  path: 'kznexpress.csv',
+  path: 'kznexpress-out.csv',
+  separator:';',
   header: [
-    {id: 'url', title: 'URL'},
-    {id: 'order', title: 'Order'},
+    {id: 'URL', title: 'URL title'},
+    {id: 'Orders', title: 'Orders title'}
   ]
 });
 
 fs.createReadStream('kznexpress.csv')
   .pipe(csv({separator:';'}))
   .on('data', (row) => {
-    //console.log(csvData);
     csvData.push(row);
 
   })
@@ -57,12 +58,18 @@ fs.createReadStream('kznexpress.csv')
     //console.log(csvData)
     for (const itCsv of csvData) {
       itCsv.Orders = await getOrderByUrl(itCsv.URL);
-      console.log(itCsv.Orders)
-      //itCsv.Orders = itCsv.Orders.join();
+      console.log(itCsv)
+
     }
     console.log(csvData);
-        //csvWriter.writeRecords(csvData)
-    //.then(()=> console.log('The CSV file was written successfully'));
+    csvWriter.writeRecords(csvData)
+    .then(()=> console.log('The CSV file was written successfully')); 
+    //const ws = fs.createWriteStream("kznexpress-out.csv");
+    // fastcsv
+    //   .write(data, { headers: true })
+    //   .pipe(ws);
+     
+
   });
 
 })();
