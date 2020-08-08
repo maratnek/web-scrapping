@@ -1,8 +1,8 @@
-const http = require('http');
+//const http = require('http');
 const csv = require('csv-parser');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const fastcsv = require('fast-csv');
+//const fastcsv = require('fast-csv');
 
 const Nightmare = require('nightmare')
 const cheerio = require('cheerio');
@@ -17,8 +17,9 @@ const getOrderByUrl = async URL => {
       }
 
     console.log(URL)
-    const nightmare = Nightmare({ show: true,  })
+    const nightmare = Nightmare({ show: false,  })
     let order;
+    console.log('nightmare create')
     await nightmare
     .goto(URL)
     .wait('body')
