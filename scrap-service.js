@@ -68,5 +68,5 @@ fs.createReadStream('kznexpress.csv')
 
 })();
 
-
+module.exports = {getOrderByUrl};
 

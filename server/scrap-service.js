@@ -1,8 +1,6 @@
-//const http = require('http');
 const csv = require('csv-parser');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-//const fastcsv = require('fast-csv');
 
 const Nightmare = require('nightmare')
 const cheerio = require('cheerio');
@@ -35,10 +33,9 @@ const getOrderByUrl = async URL => {
   
 }
 
-
 let csvData = [];
 
-(async ()=>{
+let startThisModule = async ()=>{
 const csvWriter = createCsvWriter({
   path: 'kznexpress-out.csv',
   separator:';',
@@ -48,13 +45,6 @@ const csvWriter = createCsvWriter({
   ]
 });
 
-class CsvHandler {
-  handler(stream) {
-    console.log('handle', stream);
-  } 
-};
-export {CsvHandler}
-
 fs.createReadStream('kznexpress.csv')
   .pipe(csv({separator:';'}))
   .on('data', (row) => {
@@ -63,7 +53,6 @@ fs.createReadStream('kznexpress.csv')
   })
   .on('end', async () => {
     console.log('CSV file successfully processed');
-    //console.log(csvData)
     for (const itCsv of csvData) {
       itCsv.Orders = await getOrderByUrl(itCsv.URL);
       console.log(itCsv)
@@ -72,15 +61,18 @@ fs.createReadStream('kznexpress.csv')
     console.log(csvData);
     csvWriter.writeRecords(csvData)
     .then(()=> console.log('The CSV file was written successfully')); 
-    //const ws = fs.createWriteStream("kznexpress-out.csv");
-    // fastcsv
-    //   .write(data, { headers: true })
-    //   .pipe(ws);
-     
 
   });
 
-})();
+};
 
+const getCsvStream = async () => {
+  return csv({separator:';'});
+};
 
+module.exports = {
+  getOrderByUrl, 
+  getCsvStream,
+  csv
+};
 

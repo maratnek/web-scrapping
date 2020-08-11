@@ -48,13 +48,6 @@ const csvWriter = createCsvWriter({
   ]
 });
 
-export class CsvHandler {
-  handler(stream) {
-    console.log('handle', stream);
-  } 
-};
-
-declare module 'CsvHandler';
 
 fs.createReadStream('kznexpress.csv')
   .pipe(csv({separator:';'}))
@@ -84,4 +77,7 @@ fs.createReadStream('kznexpress.csv')
 })();
 
 
-
+//module.exports = {getOrderByUrl};
+export function getOrderByUrl(URL: string): any {
+  return 4;
+}

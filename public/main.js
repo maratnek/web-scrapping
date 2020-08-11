@@ -25,7 +25,7 @@ const file = document.getElementById('csvFile').files[0];
       body: file
     })
     .then(response => {
-        console.log('Responce', response)
+        console.log('Responce', response.json())
         response.json()
     })
     .then(data => {
