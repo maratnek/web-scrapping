@@ -17,7 +17,7 @@ const file = document.getElementById('csvFile').files[0];
     console.log(file);
 
     const formData = new FormData()
-    formData.append('myFile', file)
+    formData.append('csvFile', file)
   
     fetch('/scrap-service', {
       method: 'POST',
@@ -25,8 +25,8 @@ const file = document.getElementById('csvFile').files[0];
       body: file
     })
     .then(response => {
-        console.log('Responce', response.json())
-        response.json()
+        //console.log('Responce', response)
+        return response.text();
     })
     .then(data => {
       console.log(data)
@@ -36,27 +36,17 @@ const file = document.getElementById('csvFile').files[0];
     })
 });
 
-document.querySelector('#csvFile').addEventListener('change', event => {
-    //handleImageUpload(event)
-  })
+const source = new EventSource('/events');
 
-const handleImageUpload = event => {
-    const files = event.target.files
-    const formData = new FormData()
-    formData.append('myFile', files[0])
-  
-    fetch('/scrap-service', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-        console.log('Responce', response)
-        response.json()
-    })
-    .then(data => {
-      console.log(data)
-    })
-    .catch(error => {
-      console.error(error)
-    })
-  }
+source.addEventListener('message', message => {
+  console.log('Got', message);
+
+  const data = JSON.parse(event.data);
+  //const data = event.data.json();
+  // Display the event data in the `content` div
+  let li =  document.createElement('li');
+  li.classList.add('collection-item');
+  li.classList.add('blue-grey')
+  li.innerHTML = `New data: ${data.URL} ${data.Orders}`;
+  document.querySelector('#content').appendChild(li); 
+});

@@ -35,7 +35,6 @@ const getOrderByUrl = async URL => {
 
 let csvData = [];
 
-let startThisModule = async ()=>{
 const csvWriter = createCsvWriter({
   path: 'kznexpress-out.csv',
   separator:';',
@@ -44,6 +43,14 @@ const csvWriter = createCsvWriter({
     {id: 'Orders', title: 'Orders title'}
   ]
 });
+let writeCsvData = async (csv_data) => {
+  console.log(csv_data);
+  csvWriter.writeRecords(csv_data)
+  .then(()=> console.log('The CSV file was written successfully')); 
+}
+
+let startThisModule = async ()=>{
+
 
 fs.createReadStream('kznexpress.csv')
   .pipe(csv({separator:';'}))
@@ -58,9 +65,7 @@ fs.createReadStream('kznexpress.csv')
       console.log(itCsv)
 
     }
-    console.log(csvData);
-    csvWriter.writeRecords(csvData)
-    .then(()=> console.log('The CSV file was written successfully')); 
+    writeCsvData(csvData);
 
   });
 
@@ -73,6 +78,7 @@ const getCsvStream = async () => {
 module.exports = {
   getOrderByUrl, 
   getCsvStream,
+  writeCsvData,
   csv
 };
 

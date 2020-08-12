@@ -1,46 +1,101 @@
 import express = require('express');
 import path = require('path');
-//import * as getOrderByUrl from './index.d';
-import {CsvHandler} from './service';
-// import bodyParser = require('body-parser')
 
 // Create a new express app instance
 const app: express.Application = express();
 
 // set static folder
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.json());
 
-// app.get('/', function (req, res) {
-//     res.send('Hello World!');
+const EventEmitter = require('events');
+
+const Stream = new EventEmitter(); // my event emitter instance
+
+// app.get('/events2', function(request, response){
+//   response.writeHead(200, {
+//     'Content-Type': 'text/event-stream',
+//     'Cache-Control': 'no-cache',
+//     'Connection': 'keep-alive'
+//   });
+
+//   Stream.on("push", function(event : any, data : any) {
+//     response.write("event: " + String(event) + "\n" + "data: " + JSON.stringify(data) + "\n\n");
+//   });
 // });
 
-let handleServ = new CsvHandler();
-handleServ.handler('streamser');
+// setInterval(function(){
+//   Stream.emit("push", "test", { msg: "admit one" });
+// }, 10000)
+
+app.get('/events', async function(req, res) {
+    console.log('Got /events');
+    res.set({
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'text/event-stream',
+      'Connection': 'keep-alive'
+    });
+    res.flushHeaders();
+
+    // Tell the client to retry every 10 seconds if connectivity is lost
+    res.write('retry: 10000\n\n');
+    let count = 0;
+    Stream.on("push", function(event : any, data : any) {
+        console.log('push data');
+        //res.write("event: " + String(event) + "\n" + "data: " + JSON.stringify(data) + "\n\n");
+        
+       res.write(`data: ${JSON.stringify(data)}\n\n`);
+      });
+
+//     while (true) {
+//        await new Promise(resolve => setTimeout(resolve, 2000));
+
+//   //Stream.emit("push", "test", { msg: "admit one" });
+//       console.log('Emit', ++count);
+//     //   // Emit an SSE that contains the current 'count' as a string
+//        //res.write(`data: ${++count}\n\n`);
+//      }
+  });;
 
 // parse application/json
 import fs from 'fs'
 import * as Service from './scrap-service'
 import csv = require('csv-parser');
-let ws = fs.createWriteStream('load.csv');
+import { json } from 'body-parser';
 
-import {CsvStream} from './service';
-//const Busboy = require('busboy');
-let csvStream = new CsvStream();
-import {Readable} from 'stream';
+let csvData : any = [];
 
 app.post('/scrap-service', (req,res)=>{
     console.log('scrap-service')
     //req.pipe(csvStream)
-
+    
     let CSV = csv({separator:';'})
-    CSV.on('data', d => console.log('data csv', d))
+    CSV.on('data', (d) => {
+        console.log('data csv', d)
+        if (d.URL)
+           csvData.push(d);
+    })
+    CSV.on('end', async () => {
+        console.log('CSV file successfully processed');
+        for (const itCsv of csvData) {
+          itCsv.Orders = await Service.getOrderByUrl(itCsv.URL);
+          console.log(itCsv)
+          res.status(200).write(JSON.stringify(itCsv));
+
+          Stream.emit("push", "test", itCsv);
+    
+        }
+        await Service.writeCsvData(csvData);
+        return res.status(200).end();
+        // return res.json(csvData);
+    });
+
     req.pipe(CSV) 
     req.on('data', d => {
         console.log('data', d.toString())
     });
     req.on('error', err => console.error(err));
     req.on('close', ()=> {
-        res.json("good");
         console.log('close')
 });
 })
