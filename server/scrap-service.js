@@ -11,6 +11,7 @@ const getOrderByUrl = async URL => {
         const $ = cheerio.load(html);
         let str = $('.stats .orders span').text();
         str = str.replace(/\n/g, ''); 
+        console.log('data nightmare: ', str)
         return str;
       }
 
