@@ -55,7 +55,7 @@ app.get('/events', async function(req, res) {
 //     //   // Emit an SSE that contains the current 'count' as a string
 //        //res.write(`data: ${++count}\n\n`);
 //      }
-  });;
+  });    ;
 
 // parse application/json
 import fs from 'fs'
@@ -67,7 +67,6 @@ let csvData : any = [];
 
 app.post('/scrap-service', (req,res)=>{
     console.log('scrap-service')
-    //req.pipe(csvStream)
     
     let CSV = csv({separator:';'})
     CSV.on('data', (d) => {
@@ -80,24 +79,21 @@ app.post('/scrap-service', (req,res)=>{
         for (const itCsv of csvData) {
           itCsv.Orders = await Service.getOrderByUrl(itCsv.URL);
           console.log(itCsv)
-          res.status(200).write(JSON.stringify(itCsv));
-
           Stream.emit("push", "test", itCsv);
     
         }
         await Service.writeCsvData(csvData);
-        return res.status(200).end();
-        // return res.json(csvData);
     });
 
     req.pipe(CSV) 
     req.on('data', d => {
         console.log('data', d.toString())
+        res.status(200).end();
     });
     req.on('error', err => console.error(err));
     req.on('close', ()=> {
         console.log('close')
-});
+    });
 })
 
 // const multer = require('multer');

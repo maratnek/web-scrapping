@@ -16,7 +16,7 @@ const getOrderByUrl = async URL => {
       }
 
     console.log(URL)
-    const nightmare = Nightmare({ show: true,  })
+    const nightmare = Nightmare({ show: false,  })
     let order;
     console.log('nightmare create')
     await nightmare
