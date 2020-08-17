@@ -167,4 +167,4 @@ app.post('/scrap-service', function (req, res) {
 //       });
 //   });
 var PORT = process.env.PORT || 3000;
-app.listen(PORT, function () { return console.log("App is listening on port 3000!"); });
+app.listen(PORT, function () { return console.log("App is listening on port " + PORT + "!"); });
