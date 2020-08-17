@@ -6,9 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/main.js",
+    "start": "node deploy/main.js",
     "tsc": "tsc",
-    "compile": "tsc && node server/main.js",
+    "compile": "tsc && node deploy/main.js",
     "dev": "nodemon -e ts  --exec \"npm run compile\"",
     "build": "tsc",
     "postinstall": "npm run build"
