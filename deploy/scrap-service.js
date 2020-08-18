@@ -38,14 +38,17 @@ let csvData = [];
 
 const csvWriter = createCsvWriter({
   path: 'kznexpress-out.csv',
-  separator:';',
+  fieldDelimiter:';',
+  recordDelimiter:'\r\n',
+  encoding: 'utf8',
   header: [
-    {id: 'URL', title: 'URL title'},
-    {id: 'Orders', title: 'Orders title'}
+    {id: 'URL', title: 'URL'},
+    {id: 'Orders', title: 'ORDERS'},
+    {id: 'Count', title: 'COUNT'}
   ]
 });
 let writeCsvData = async (csv_data) => {
-  console.log(csv_data);
+  console.log('Write to file', csv_data);
   csvWriter.writeRecords(csv_data)
   .then(()=> console.log('The CSV file was written successfully')); 
 }
