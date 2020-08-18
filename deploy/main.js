@@ -57,6 +57,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var path = require("path");
+var Service = __importStar(require("./scrap-service"));
+var csv = require("csv-parser");
 // Create a new express app instance
 var app = express();
 // set static folder
@@ -88,8 +90,7 @@ app.get('/events', function (req, res) {
     });
 });
 ;
-var Service = __importStar(require("./scrap-service"));
-var csv = require("csv-parser");
+// parse application/json
 app.post('/scrap-service', function (req, res) {
     console.log('scrap-service');
     var csvData = [];

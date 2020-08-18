@@ -38,8 +38,10 @@ let csvData = [];
 
 
 let writeCsvData = async (csv_data) => {
+  const fileName = `output/kznexpress-out-${Date.now()}.csv`; 
+  fs.writeFileSync(fileName, '');
   const csvWriter = createCsvWriter({
-    path: 'output/kznexpress-out.csv'+Date.now(),
+    path: fileName,
     fieldDelimiter:';',
     recordDelimiter:'\r\n',
     encoding: 'utf8',

@@ -1,6 +1,9 @@
 import express = require('express');
 import path = require('path');
-
+import fs from 'fs'
+import * as Service from './scrap-service'
+import csv = require('csv-parser');
+import { json } from 'body-parser';
 // Create a new express app instance
 const app: express.Application = express();
 
@@ -11,7 +14,6 @@ app.use(express.json());
 const EventEmitter = require('events');
 
 const Stream = new EventEmitter(); // my event emitter instance
-
 app.get('/events', async function(req, res) {
     console.log('Got /events');
     res.set({
@@ -33,10 +35,7 @@ app.get('/events', async function(req, res) {
   });    ;
 
 // parse application/json
-import fs from 'fs'
-import * as Service from './scrap-service'
-import csv = require('csv-parser');
-import { json } from 'body-parser';
+
 
 
 app.post('/scrap-service', (req,res)=>{
@@ -54,7 +53,7 @@ app.post('/scrap-service', (req,res)=>{
         for (const itCsv of csvData) {
           itCsv.Orders = await Service.getOrderByUrl(itCsv.URL);
           itCsv.Count = itCsv.Orders.match(/\d+/g);
-          
+
           console.log(itCsv)
           Stream.emit("push", "test", itCsv);
     
