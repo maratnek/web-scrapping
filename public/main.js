@@ -39,6 +39,7 @@ source.addEventListener('message', message => {
   let li =  document.createElement('li');
   li.classList.add('collection-item');
   li.classList.add('blue-grey')
-  li.innerHTML = `New data: ${data.URL} ${data.Orders} <span class="chip green">${data.Count}</span>`;
+  li.innerHTML = `New data: <a class="lightgreen" href="${data.URL}">${data.URL}</a> ${data.Orders} <span class="chip green">${data.Count}</span>`;
   document.querySelector('#content').appendChild(li); 
 });
+;
