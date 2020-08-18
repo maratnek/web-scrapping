@@ -64,19 +64,6 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 var EventEmitter = require('events');
 var Stream = new EventEmitter(); // my event emitter instance
-// app.get('/events2', function(request, response){
-//   response.writeHead(200, {
-//     'Content-Type': 'text/event-stream',
-//     'Cache-Control': 'no-cache',
-//     'Connection': 'keep-alive'
-//   });
-//   Stream.on("push", function(event : any, data : any) {
-//     response.write("event: " + String(event) + "\n" + "data: " + JSON.stringify(data) + "\n\n");
-//   });
-// });
-// setInterval(function(){
-//   Stream.emit("push", "test", { msg: "admit one" });
-// }, 10000)
 app.get('/events', function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var count;
@@ -92,7 +79,7 @@ app.get('/events', function (req, res) {
             res.write('retry: 10000\n\n');
             count = 0;
             Stream.on("push", function (event, data) {
-                console.log('push data');
+                //console.log('push data');
                 //res.write("event: " + String(event) + "\n" + "data: " + JSON.stringify(data) + "\n\n");
                 res.write("data: " + JSON.stringify(data) + "\n\n");
             });
@@ -103,9 +90,9 @@ app.get('/events', function (req, res) {
 ;
 var Service = __importStar(require("./scrap-service"));
 var csv = require("csv-parser");
-var csvData = [];
 app.post('/scrap-service', function (req, res) {
     console.log('scrap-service');
+    var csvData = [];
     var CSV = csv({ separator: ';' });
     CSV.on('data', function (d) {
         console.log('data csv', d);
@@ -150,21 +137,5 @@ app.post('/scrap-service', function (req, res) {
         console.log('close');
     });
 });
-// const multer = require('multer');
-// const csv = require('fast-csv');
-// const router = express.Router();
-// const upload = multer({dest: './tmp/csv/'});
-// router.post('/scrap-service', upload.single('file'), function (req, res, next) {
-//     var fileRows = [], fileHeader;
-//     // open uploaded file
-//     csv.fromPath(req.file.path)
-//       .on("data", function (data:any) {
-//         fileRows.push(data); // push each row
-//       })
-//       .on("end", function () {
-//         fs.unlinkSync(req.file.path);   // remove temp file
-//         //process "fileRows"
-//       });
-//   });
 var PORT = process.env.PORT || 5000;
 app.listen(PORT, function () { return console.log("App is listening on port https://localhost:" + PORT + "!"); });

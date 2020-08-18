@@ -1,6 +1,8 @@
 FROM node:latest
 
 RUN apt-get update && \
+    # apt-get install -y libgtk2.0-0 libgconf-2-4 \
+    # libnotify4 libasound2 libxtst6 libxss1 libnss3 xvfb
     apt-get -y install \
     make unzip g++ libssl-dev git xvfb x11-xkb-utils \
     xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
@@ -29,4 +31,4 @@ COPY . .
 EXPOSE 5000
 #CMD [ "node", "index.js" ]
 
-ENTRYPOINT xvfb-run --server-args="-screen 9 1280x2000x24" npm start
+ENTRYPOINT DEBUG=nightmare xvfb-run --server-args="-screen 9 1280x2000x24" npm start
