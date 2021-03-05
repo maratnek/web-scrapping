@@ -9,10 +9,19 @@ const getOrderByUrl = async URL => {
     let getData = html => {
         data = [];
         const $ = cheerio.load(html);
-        let str = $('.stats .orders span').text();
-        str = str.replace(/\n/g, ''); 
-        console.log('data nightmare: ', str)
-        return str;
+        let order = $('.stats .orders').text();
+        console.log('Order:', order);
+        let str = $('.region').text();
+        console.log(str);
+        order = order.replace(/\n/g, ' '); 
+        order = order.match(/\d+/g); 
+        console.log(order);
+        if (order) {
+          console.log('data nightmare: ', order[0])
+        return order[0];
+        }
+        else
+          return '0';
       }
 
     console.log(URL)
@@ -21,8 +30,8 @@ const getOrderByUrl = async URL => {
     console.log('nightmare create')
     await nightmare
     .goto(URL)
-    .wait('body')
-    .evaluate(() => document.querySelector('body').innerHTML)
+    .wait('#product-info')
+    .evaluate(() => document.querySelector('#product-info').innerHTML)
     .end()
     .then(response => {
       order = getData(response);
@@ -81,6 +90,9 @@ fs.createReadStream('kznexpress.csv')
 const getCsvStream = async () => {
   return csv({separator:';'});
 };
+
+
+getOrderByUrl('https://kazanexpress.ru/product/221974');
 
 module.exports = {
   getOrderByUrl, 

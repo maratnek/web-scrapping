@@ -13,6 +13,7 @@ form.addEventListener('submit', ev => {
     ul.innerHTML = '';
     fetch('/scrap-service', {
       method: 'POST',
+      mode: 'no-cors',
       //body: formData
       body: file
     })
