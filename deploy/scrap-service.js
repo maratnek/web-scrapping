@@ -25,8 +25,8 @@ const getOrderByUrl = async URL => {
       }
 
     console.log(URL)
-    const nightmare = Nightmare({ show: false,  })
-    let order;
+    const nightmare = Nightmare({ show: false, waitTimeout: 2000 })
+    let order = '-1';
     console.log('nightmare create')
     await nightmare
     .goto(URL)
@@ -36,7 +36,7 @@ const getOrderByUrl = async URL => {
     .then(response => {
       order = getData(response);
     }).catch(err => {
-      console.log(err);
+      console.log('Fail search', err);
     });
 
     return order;
