@@ -43,6 +43,46 @@ const getOrderByUrl = async URL => {
   
 }
 
+const getStoreByUrl = async URL => {
+    let getData = html => {
+        data = [];
+        const $ = cheerio.load(html);
+        let order = $('.products-list').text();
+        console.log('Order:', order);
+        let str = $('.region').text();
+        console.log(str);
+        order = order.replace(/\n/g, ' '); 
+        order = order.match(/\d+/g); 
+        console.log(order);
+        if (order) {
+          console.log('data nightmare: ', order[0])
+        return order[0];
+        }
+        else
+          return '0';
+      }
+
+    const waitSelectore = '#shop-products';
+
+    console.log(URL)
+    const nightmare = Nightmare({ show: false, waitTimeout: 2000 })
+    let order = '-1';
+    console.log('nightmare create, get store')
+    await nightmare
+    .goto(URL)
+    .wait('#shop-products')
+    .evaluate(() => document.querySelector('#shop-products').innerHTML)
+    .end()
+    .then(response => {
+      order = getData(response);
+    }).catch(err => {
+      console.log('Fail search', err);
+    });
+
+    return order;
+  
+}
+
 let csvData = [];
 
 
@@ -92,7 +132,8 @@ const getCsvStream = async () => {
 };
 
 
-getOrderByUrl('https://kazanexpress.ru/product/221974');
+// getOrderByUrl('https://kazanexpress.ru/product/221974');
+getStoreByUrl('https://kazanexpress.ru/alistore');
 
 module.exports = {
   getOrderByUrl, 

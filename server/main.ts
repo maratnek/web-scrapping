@@ -52,7 +52,7 @@ app.post('/scrap-service', (req,res)=>{
         console.log('CSV file successfully processed');
         for (const itCsv of csvData) {
           itCsv.Orders = await Service.getOrderByUrl(itCsv.URL);
-          itCsv.Count = itCsv.Orders.match(/\d+/g);
+          itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
 
           console.log(itCsv)
           Stream.emit("push", "test", itCsv);

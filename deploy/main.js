@@ -115,7 +115,7 @@ app.post('/scrap-service', function (req, res) {
                     return [4 /*yield*/, Service.getOrderByUrl(itCsv.URL)];
                 case 2:
                     _a.Orders = _b.sent();
-                    itCsv.Count = itCsv.Orders.match(/\d+/g);
+                    itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
                     console.log(itCsv);
                     Stream.emit("push", "test", itCsv);
                     _b.label = 3;
