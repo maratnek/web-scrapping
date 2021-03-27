@@ -44,40 +44,149 @@ const getOrderByUrl = async URL => {
 }
 
 const getStoreByUrl = async URL => {
+    let commonCards = 0;
+    let goodMap = new Map;
     let getData = html => {
         data = [];
         const $ = cheerio.load(html);
-        let order = $('.products-list').text();
-        console.log('Order:', order);
-        let str = $('.region').text();
-        console.log(str);
-        order = order.replace(/\n/g, ' '); 
-        order = order.match(/\d+/g); 
-        console.log(order);
-        if (order) {
-          console.log('data nightmare: ', order[0])
-        return order[0];
-        }
-        else
-          return '0';
+        let cardsCount = $('.products-list').children();
+        console.log('Cards count: ', cardsCount.length);
+        let cardLink = $('.card-express');
+
+        let cardsBlock = $('.card-info-block');
+        cardsBlock.each(function(i, elem) {
+          let link = $(this).parent().parent().attr('href');
+          let title = $(this).children('.subtitle').text();
+          let stars = $(this).find('.raiting-wrapper').text();
+          // stars = stars.replace(/\n/g, ' ');
+          stars = stars.match(/\d.\d+/g); 
+          let order = $(this).find('.orders').contents().filter(function() {
+            return this.nodeType == 3;
+          }).text();
+          order = order.replace(/\n/g, ' ');
+          order = order.match(/\d+/g); 
+          console.log(`Cards info: ${i} card dummy: ${title}`);
+          console.log(`Cards info: ${i} card dummy: ${order}`);
+          console.log(`Cards info: stars: ${stars}`);
+          console.log(`link: ${link}`);
+
+        if (link)
+          goodMap.set(link, {stars, order, title});
+        });
+        commonCards += cardsBlock.length;
       }
 
     const waitSelectore = '#shop-products';
 
     console.log(URL)
-    const nightmare = Nightmare({ show: false, waitTimeout: 2000 })
+    const nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1200})
     let order = '-1';
     console.log('nightmare create, get store')
+
     await nightmare
     .goto(URL)
     .wait('#shop-products')
-    .evaluate(() => document.querySelector('#shop-products').innerHTML)
-    .end()
-    .then(response => {
-      order = getData(response);
-    }).catch(err => {
-      console.log('Fail search', err);
-    });
+
+  async function scroll() {
+    console.log('Scroll all');
+    let prevHeight = -1, curHeight = 0;
+    while (prevHeight !== curHeight) {
+      prevHeight = curHeight;
+      await nightmare.evaluate(() => {
+        return document.querySelector('#shop-products').scrollHeight;
+      })
+        .then(height => {
+          curHeight = height;
+          console.log('HeighT: ', height);
+          console.log('diff: ', height - prevHeight);
+        })
+        .catch(err => console.log('Some err', err));
+
+      console.log('current HeighT: ', curHeight);
+      await nightmare.scrollTo(curHeight, 0)
+        .wait(1000);
+    }
+    console.log('Scroll to 0')
+    await nightmare.scrollTo(0, 0)
+      .wait(500)
+
+  }
+  async function findGoods() {
+let curHeight = 0;
+      await nightmare.evaluate(() => {
+        return document.querySelector('#shop-products').scrollHeight;
+      })
+      .then(height => { 
+        curHeight = height;
+        console.log('HeighT: ', height);
+      })
+      .catch(err => console.log('Some err', err));
+
+    let height = 0;
+    while(height <= curHeight) {
+
+      await nightmare
+        .wait('#shop-products')
+        .evaluate(() => document.querySelector('#shop-products').innerHTML)
+        .then(response => {
+          // console.log('Responce ', response);
+          order = getData(response);
+        }).catch(err => {
+          console.log('Fail search', err);
+        });
+
+        height += 2000;
+      console.log('current HeighT: ', height);
+      await nightmare.scrollTo(height, 0)
+      .wait(1000);
+    }
+
+  }
+
+  async function findVer1() {
+    console.log('find ver 1');
+    let prevHeight = -1, curHeight = 0;
+    while (prevHeight !== curHeight) {
+      prevHeight = curHeight;
+      await nightmare.evaluate(() => {
+        return document.querySelector('#shop-products').scrollHeight;
+      })
+        .then(height => {
+          curHeight = height;
+          console.log('HeighT: ', height);
+          console.log('diff: ', height - prevHeight);
+        })
+        .catch(err => console.log('Some err', err));
+
+      
+      await nightmare
+        .wait('#shop-products')
+        .evaluate(() => document.querySelector('#shop-products').innerHTML)
+        .then(response => {
+          // console.log('Responce ', response);
+          order = getData(response);
+        }).catch(err => {
+          console.log('Fail search', err);
+        });
+
+      console.log('current HeighT: ', curHeight);
+      await nightmare.scrollTo(curHeight, 0)
+        .wait(1000);
+      // await nightmare.scrollTo(curHeight - 2000, 0)
+        // .wait(1000);
+    }
+
+  }
+
+  await scroll();
+  await findGoods();
+  await nightmare.end();
+
+  for (const it of goodMap) {
+   console.log('Map it: ', it); 
+  }
+  console.log('Good map length:', goodMap.size); 
+  console.log('Common cards length: ', commonCards);  
 
     return order;
   
