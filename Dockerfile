@@ -26,7 +26,7 @@ RUN apt-get install -y \
   gcc-multilib \
   g++-multilib
 
-ENV DEBUG="nightmare"
+# ENV DEBUG="nightmare"
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -34,7 +34,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY . .
+ADD package*.json .
 
 RUN npm install
 RUN npm install nightmare
@@ -44,8 +44,8 @@ RUN npm install nightmare
 # RUN npm ci --only=production
 
 # Bundle app source
-# COPY deploy .
+COPY deploy .
 
-ENTRYPOINT DEBUG=nightmare,electron xvfb-run --server-args="-screen 0 1280x2000x24" npm start
+ENTRYPOINT DEBUG=nightmare:*,electron:* xvfb-run --server-args="-screen 0 1280x2000x24" npm start
 
 EXPOSE 5000

@@ -79,7 +79,7 @@ const getStoreByUrl = async URL => {
     const waitSelectore = '#shop-products';
 
     console.log(URL)
-    const nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1200})
+    const nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1000})
     let order = '-1';
     console.log('nightmare create, get store')
 
@@ -93,22 +93,23 @@ const getStoreByUrl = async URL => {
     while (prevHeight !== curHeight) {
       prevHeight = curHeight;
       await nightmare.evaluate(() => {
-        return document.querySelector('#shop-products').scrollHeight;
+        // return document.querySelector('#shop-products').scrollHeight;
+        return document.querySelector('footer').offsetTop;
       })
-        .then(height => {
+      .then(height => {
           curHeight = height;
           console.log('HeighT: ', height);
           console.log('diff: ', height - prevHeight);
-        })
-        .catch(err => console.log('Some err', err));
+      })
+      .catch(err => console.log('Some err', err));
 
       console.log('current HeighT: ', curHeight);
-      await nightmare.scrollTo(curHeight, 0)
-        .wait(1000);
+      await nightmare.scrollTo(curHeight,0)
+      .wait(2000)
     }
     console.log('Scroll to 0')
     await nightmare.scrollTo(0, 0)
-      .wait(500)
+      .wait(1500)
 
   }
   async function findGoods() {
@@ -242,7 +243,9 @@ const getCsvStream = async () => {
 
 
 // getOrderByUrl('https://kazanexpress.ru/product/221974');
-getStoreByUrl('https://kazanexpress.ru/alistore');
+// getStoreByUrl('https://kazanexpress.ru/alistore');
+// getStoreByUrl('https://kazanexpress.ru/pichee');
+getStoreByUrl('https://kazanexpress.ru/seletstore');
 
 module.exports = {
   getOrderByUrl, 
