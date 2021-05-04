@@ -58,6 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var path = require("path");
 var Service = __importStar(require("./scrap-service"));
+// import * as Service from './service'
 var csv = require("csv-parser");
 // Create a new express app instance
 var app = express();

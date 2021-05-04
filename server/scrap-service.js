@@ -251,6 +251,7 @@ module.exports = {
   getOrderByUrl, 
   getCsvStream,
   writeCsvData,
+  getStoreByUrl,
   csv
 };
 

@@ -2,6 +2,7 @@ import express = require('express');
 import path = require('path');
 import fs from 'fs'
 import * as Service from './scrap-service'
+// import * as Service from './service'
 import csv = require('csv-parser');
 import { json } from 'body-parser';
 // Create a new express app instance
