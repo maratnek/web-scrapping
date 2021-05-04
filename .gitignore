@@ -117,3 +117,5 @@ load.csv
 .ebextensions
 scrap-key-pair.pem
 new-key-scrap.pem
+
+/output
