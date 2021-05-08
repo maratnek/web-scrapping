@@ -91,7 +91,7 @@ app.get('/events', function (req, res) {
     });
 });
 ;
-// parse application/json
+// scrap service
 app.post('/scrap-service', function (req, res) {
     console.log('scrap-service');
     var csvData = [];
@@ -131,6 +131,54 @@ app.post('/scrap-service', function (req, res) {
         });
     }); });
     req.pipe(CSV);
+    req.on('data', function (d) {
+        console.log('data', d.toString());
+        res.status(200).end();
+    });
+    req.on('error', function (err) { return console.error(err); });
+    req.on('close', function () {
+        console.log('close');
+    });
+});
+// scrap store
+app.post('/scrap-store', function (req, res) {
+    console.log('scrap-store');
+    var csvData = [];
+    var CSV = csv({ separator: ';' });
+    CSV.on('data', function (d) {
+        console.log('data csv', d);
+        if (d.URL)
+            csvData.push(d);
+    });
+    CSV.on('end', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _i, csvData_2, itCsv, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    console.log('CSV file successfully processed');
+                    _i = 0, csvData_2 = csvData;
+                    _b.label = 1;
+                case 1:
+                    if (!(_i < csvData_2.length)) return [3 /*break*/, 4];
+                    itCsv = csvData_2[_i];
+                    _a = itCsv;
+                    return [4 /*yield*/, Service.getStoreByUrl(itCsv.URL)];
+                case 2:
+                    _a.Orders = _b.sent();
+                    itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
+                    console.log(itCsv);
+                    Stream.emit("push", "test", itCsv);
+                    _b.label = 3;
+                case 3:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 4: return [4 /*yield*/, Service.writeCsvData(csvData)];
+                case 5:
+                    _b.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
     req.on('data', function (d) {
         console.log('data', d.toString());
         res.status(200).end();

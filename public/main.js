@@ -29,6 +29,37 @@ form.addEventListener('submit', ev => {
     })
 });
 
+const formStore = document.getElementById('formStore');
+formStore.addEventListener('submit', ev => {
+    console.log('Url', url);
+    ev.defaultPrevented = false;
+    ev.preventDefault();
+    const url = document.getElementById('storeUrl');
+
+
+    // const formData = new FormData()
+    // formData.append('csvFile', file)
+
+  let ul =  document.getElementById('content');
+    ul.innerHTML = '';
+    fetch('/scrap-store', {
+      method: 'POST',
+      mode: 'no-cors',
+      body: url 
+    })
+    .then(response => {
+        //console.log('Responce', response)
+        return response.text();
+    })
+    .then(data => {
+      console.log(data)
+    })
+    .catch(error => {
+      console.error(error)
+    })
+});
+
+
 const source = new EventSource('/events');
 
 source.addEventListener('message', message => {

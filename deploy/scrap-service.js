@@ -46,6 +46,7 @@ var getOrderByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
         switch (_a.label) {
             case 0:
                 getData = function (html) {
+                    console.log('html', html);
                     data = [];
                     var $ = cheerio.load(html);
                     var order = $('.stats .orders').text();
@@ -63,7 +64,7 @@ var getOrderByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                         return '0';
                 };
                 console.log(URL);
-                nightmare = Nightmare({ show: false, waitTimeout: 2000 });
+                nightmare = Nightmare({ show: true });
                 order = '-1';
                 console.log('nightmare create');
                 return [4 /*yield*/, nightmare
@@ -96,8 +97,8 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                         if (!(prevHeight !== curHeight)) return [3 /*break*/, 4];
                         prevHeight = curHeight;
                         return [4 /*yield*/, nightmare.evaluate(function () {
-                                // return document.querySelector('#shop-products').scrollHeight;
-                                return document.querySelector('footer').offsetTop;
+                                return document.querySelector('#shop-products').scrollHeight;
+                                // return document.querySelector('footer').offsetTop;
                             })
                                 .then(function (height) {
                                 curHeight = height;
@@ -109,14 +110,14 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                         _a.sent();
                         console.log('current HeighT: ', curHeight);
                         return [4 /*yield*/, nightmare.scrollTo(curHeight, 0)
-                                .wait(2000)];
+                                .wait(1000)];
                     case 3:
                         _a.sent();
                         return [3 /*break*/, 1];
                     case 4:
                         console.log('Scroll to 0');
                         return [4 /*yield*/, nightmare.scrollTo(0, 0)
-                                .wait(1500)];
+                                .wait(500)];
                     case 5:
                         _a.sent();
                         return [2 /*return*/];
@@ -149,7 +150,7 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                                 .wait('#shop-products')
                                 .evaluate(function () { return document.querySelector('#shop-products').innerHTML; })
                                 .then(function (response) {
-                                // console.log('Responce ', response);
+                                console.log('Responce ', response);
                                 order = getData(response);
                             }).catch(function (err) {
                                 console.log('Fail search', err);
@@ -248,7 +249,7 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                 };
                 waitSelectore = '#shop-products';
                 console.log(URL);
-                nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1000 });
+                nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1200 });
                 order = '-1';
                 console.log('nightmare create, get store');
                 return [4 /*yield*/, nightmare
@@ -342,7 +343,7 @@ var getCsvStream = function () { return __awaiter(void 0, void 0, void 0, functi
 // getOrderByUrl('https://kazanexpress.ru/product/221974');
 // getStoreByUrl('https://kazanexpress.ru/alistore');
 // getStoreByUrl('https://kazanexpress.ru/pichee');
-getStoreByUrl('https://kazanexpress.ru/seletstore');
+// getStoreByUrl('https://kazanexpress.ru/seletstore');
 module.exports = {
     getOrderByUrl: getOrderByUrl,
     getCsvStream: getCsvStream,

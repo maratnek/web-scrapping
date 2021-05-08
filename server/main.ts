@@ -35,10 +35,7 @@ app.get('/events', async function(req, res) {
       });
   });    ;
 
-// parse application/json
-
-
-
+// scrap service
 app.post('/scrap-service', (req,res)=>{
     console.log('scrap-service')
     
@@ -63,6 +60,40 @@ app.post('/scrap-service', (req,res)=>{
     });
 
     req.pipe(CSV) 
+    req.on('data', d => {
+        console.log('data', d.toString())
+        res.status(200).end();
+    });
+    req.on('error', err => console.error(err));
+    req.on('close', ()=> {
+        console.log('close')
+    });
+})
+
+// scrap store
+app.post('/scrap-store', (req,res)=>{
+    console.log('scrap-store')
+    
+    let csvData : any = [];
+    let CSV = csv({separator:';'})
+    CSV.on('data', (d) => {
+        console.log('data csv', d)
+        if (d.URL)
+           csvData.push(d);
+    })
+    CSV.on('end', async () => {
+        console.log('CSV file successfully processed');
+        for (const itCsv of csvData) {
+          itCsv.Orders = await Service.getStoreByUrl(itCsv.URL);
+          itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
+
+          console.log(itCsv)
+          Stream.emit("push", "test", itCsv);
+    
+        }
+        await Service.writeCsvData(csvData);
+    });
+
     req.on('data', d => {
         console.log('data', d.toString())
         res.status(200).end();
