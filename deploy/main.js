@@ -188,5 +188,58 @@ app.post('/scrap-store', function (req, res) {
         console.log('close');
     });
 });
+var goods_count = 0;
+var count = 1000000;
+var goods_url = 'https://kazanexpress.ru/product/';
+function sleep(milliseconds) {
+    var date = Date.now();
+    var currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+}
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+function findGoods() {
+    return __awaiter(this, void 0, void 0, function () {
+        var i, url, today, orders;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < count)) return [3 /*break*/, 4];
+                    url = "" + goods_url + i;
+                    console.log(url);
+                    today = new Date();
+                    console.log(today.toLocaleString("en-US"));
+                    return [4 /*yield*/, Service.getOrderByUrl(url)];
+                case 2:
+                    orders = _a.sent();
+                    console.log(orders);
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+// findGoods()
+// let stopFind = (interval: any) => { clearInterval(interval) }
+// let findGoods = async () => {
+//     goods_count++;
+//     console.log('Find goods count: ', goods_count, goods_url);
+//     // here try to find something
+//     if (goods_count == 999)
+//         stopFind(intervalStop)
+// }
+// let startFind = () => {
+//     return setInterval(findGoods,5000);
+// }
+// const intervalStop = startFind();
+Service.getStoreByUrl('https://kazanexpress.ru/0');
+Service.getStoreByUrl('https://kazanexpress.ru/1001');
 var PORT = process.env.PORT || 5000;
 app.listen(PORT, function () { return console.log("App is listening on port https://localhost:" + PORT + "!"); });
