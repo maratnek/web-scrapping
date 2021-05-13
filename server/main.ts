@@ -104,5 +104,54 @@ app.post('/scrap-store', (req,res)=>{
     });
 })
 
+let goods_count : number = 0;
+let count = 1000000;
+let goods_url : string = 'https://kazanexpress.ru/product/'
+
+function sleep(milliseconds : number) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+}
+
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+async function findGoods() {
+    for (let i = 0; i < count; i++) {
+        let url = `${goods_url}${i}`
+        console.log(url)
+        let today = new Date();
+        console.log(today.toLocaleString("en-US"))
+        let orders = await Service.getOrderByUrl(url);
+        console.log(orders)
+        // sleep(200)
+    }
+}
+
+// findGoods()
+
+// let stopFind = (interval: any) => { clearInterval(interval) }
+
+// let findGoods = async () => {
+//     goods_count++;
+//     console.log('Find goods count: ', goods_count, goods_url);
+//     // here try to find something
+//     if (goods_count == 999)
+//         stopFind(intervalStop)
+// }
+
+// let startFind = () => {
+//     return setInterval(findGoods,5000);
+// }
+
+// const intervalStop = startFind();
+
+
+Service.getStoreByUrl('https://kazanexpress.ru/0');
+Service.getStoreByUrl('https://kazanexpress.ru/1001');
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>  console.log(`App is listening on port https://localhost:${PORT}!`));

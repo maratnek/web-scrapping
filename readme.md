@@ -22,3 +22,5 @@ pm2 log
 - if server reboot
 pm2 startup ubuntu
 
+# Docker for mongo
+docker pull mongo

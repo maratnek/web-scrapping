@@ -37,14 +37,14 @@ WORKDIR /usr/src/app
 ADD package*.json ./
 
 RUN npm install
-RUN npm install nightmare
+# RUN npm install nightmare
 
 # RUN npm audit fix --force
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY deploy .
+COPY deploy ./
 
 ENTRYPOINT DEBUG=nightmare:*,electron:* xvfb-run --server-args="-screen 0 1280x2000x24" npm start
 

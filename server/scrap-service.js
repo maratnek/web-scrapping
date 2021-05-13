@@ -7,7 +7,7 @@ const cheerio = require('cheerio');
 
 const getOrderByUrl = async URL => {
   let getData = html => {
-      console.log('html', html)
+      // console.log('html', html)
     data = [];
     const $ = cheerio.load(html);
     let order = $('.stats .orders').text();
@@ -26,7 +26,7 @@ const getOrderByUrl = async URL => {
   }
 
   console.log(URL)
-  const nightmare = Nightmare({ show: true })
+  const nightmare = Nightmare({ show: false })
   let order = '-1';
   console.log('nightmare create')
   await nightmare
@@ -106,13 +106,14 @@ const getStoreByUrl = async URL => {
 
       console.log('current HeighT: ', curHeight);
       await nightmare.scrollTo(curHeight, 0)
-        .wait(1000)
+        .wait(2000)
     }
     console.log('Scroll to 0')
     await nightmare.scrollTo(0, 0)
-      .wait(500)
+      .wait(1000)
 
   }
+
   async function findGoods() {
     let curHeight = 0;
     await nightmare.evaluate(() => {
@@ -131,7 +132,7 @@ const getStoreByUrl = async URL => {
         .wait('#shop-products')
         .evaluate(() => document.querySelector('#shop-products').innerHTML)
         .then(response => {
-          console.log('Responce ', response);
+          // console.log('Responce ', response);
           order = getData(response);
         }).catch(err => {
           console.log('Fail search', err);
