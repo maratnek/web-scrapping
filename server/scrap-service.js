@@ -48,7 +48,7 @@ const getStoreByUrl = async URL => {
   let commonCards = 0;
   let goodMap = new Map;
   let getData = html => {
-    data = [];
+    // let data = [];
     const $ = cheerio.load(html);
     let cardsCount = $('.products-list').children();
     console.log('Cards count: ', cardsCount.length);
@@ -77,16 +77,16 @@ const getStoreByUrl = async URL => {
     commonCards += cardsBlock.length;
   }
 
-  const waitSelectore = '#shop-products';
+  const waitSelectore = "#shop-products";
 
   console.log(URL)
-  const nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1200 })
+  const nightmare = Nightmare({ show: true, waitTimeout: 4000, height: 1200 })
   let order = '-1';
   console.log('nightmare create, get store')
 
   await nightmare
     .goto(URL)
-    .wait('#shop-products')
+    .wait(waitSelectore)
 
   async function scroll() {
     console.log('Scroll all');
@@ -94,15 +94,15 @@ const getStoreByUrl = async URL => {
     while (prevHeight !== curHeight) {
       prevHeight = curHeight;
       await nightmare.evaluate(() => {
-        return document.querySelector('#shop-products').scrollHeight;
-        // return document.querySelector('footer').offsetTop;
+        // return document.querySelector(waitSelectore).scrollHeight;
+        return document.querySelector('footer').offsetTop;
       })
-        .then(height => {
+     .then(height => {
           curHeight = height;
           console.log('HeighT: ', height);
           console.log('diff: ', height - prevHeight);
-        })
-        .catch(err => console.log('Some err', err));
+      })
+      .catch(err => console.log('Some err', err));
 
       console.log('current HeighT: ', curHeight);
       await nightmare.scrollTo(curHeight, 0)
@@ -115,9 +115,10 @@ const getStoreByUrl = async URL => {
   }
 
   async function findGoods() {
+    console.log('Find goods with selectore ', waitSelectore);
     let curHeight = 0;
     await nightmare.evaluate(() => {
-      return document.querySelector('#shop-products').scrollHeight;
+      return document.querySelector(waitSelectore).scrollHeight;
     })
       .then(height => {
         curHeight = height;
@@ -125,12 +126,12 @@ const getStoreByUrl = async URL => {
       })
       .catch(err => console.log('Some err', err));
 
+    console.log('Find goods with selectore ', waitSelectore);
     let height = 0;
     while (height <= curHeight) {
-
       await nightmare
-        .wait('#shop-products')
-        .evaluate(() => document.querySelector('#shop-products').innerHTML)
+        .wait(waitSelectore)
+        .evaluate(() => document.querySelector(waitSelectore).innerHTML)
         .then(response => {
           // console.log('Responce ', response);
           order = getData(response);
@@ -142,41 +143,6 @@ const getStoreByUrl = async URL => {
       console.log('current HeighT: ', height);
       await nightmare.scrollTo(height, 0)
         .wait(1000);
-    }
-
-  }
-
-  async function findVer1() {
-    console.log('find ver 1');
-    let prevHeight = -1, curHeight = 0;
-    while (prevHeight !== curHeight) {
-      prevHeight = curHeight;
-      await nightmare.evaluate(() => {
-        return document.querySelector('#shop-products').scrollHeight;
-      })
-        .then(height => {
-          curHeight = height;
-          console.log('HeighT: ', height);
-          console.log('diff: ', height - prevHeight);
-        })
-        .catch(err => console.log('Some err', err));
-
-
-      await nightmare
-        .wait('#shop-products')
-        .evaluate(() => document.querySelector('#shop-products').innerHTML)
-        .then(response => {
-          // console.log('Responce ', response);
-          order = getData(response);
-        }).catch(err => {
-          console.log('Fail search', err);
-        });
-
-      console.log('current HeighT: ', curHeight);
-      await nightmare.scrollTo(curHeight, 0)
-        .wait(1000);
-      // await nightmare.scrollTo(curHeight - 2000, 0)
-      // .wait(1000);
     }
 
   }

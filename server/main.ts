@@ -149,7 +149,7 @@ async function findGoods() {
 // const intervalStop = startFind();
 
 
-Service.getStoreByUrl('https://kazanexpress.ru/0');
+// Service.getStoreByUrl('https://kazanexpress.ru/0');
 Service.getStoreByUrl('https://kazanexpress.ru/1001');
 
 

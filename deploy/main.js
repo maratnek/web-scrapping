@@ -239,7 +239,7 @@ function findGoods() {
 //     return setInterval(findGoods,5000);
 // }
 // const intervalStop = startFind();
-Service.getStoreByUrl('https://kazanexpress.ru/0');
+// Service.getStoreByUrl('https://kazanexpress.ru/0');
 Service.getStoreByUrl('https://kazanexpress.ru/1001');
 var PORT = process.env.PORT || 5000;
 app.listen(PORT, function () { return console.log("App is listening on port https://localhost:" + PORT + "!"); });

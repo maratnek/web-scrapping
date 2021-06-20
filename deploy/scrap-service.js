@@ -97,8 +97,8 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                         if (!(prevHeight !== curHeight)) return [3 /*break*/, 4];
                         prevHeight = curHeight;
                         return [4 /*yield*/, nightmare.evaluate(function () {
-                                return document.querySelector('#shop-products').scrollHeight;
-                                // return document.querySelector('footer').offsetTop;
+                                // return document.querySelector(waitSelectore).scrollHeight;
+                                return document.querySelector('footer').offsetTop;
                             })
                                 .then(function (height) {
                                 curHeight = height;
@@ -131,9 +131,10 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        console.log('Find goods with selectore ', waitSelectore);
                         curHeight = 0;
                         return [4 /*yield*/, nightmare.evaluate(function () {
-                                return document.querySelector('#shop-products').scrollHeight;
+                                return document.querySelector(waitSelectore).scrollHeight;
                             })
                                 .then(function (height) {
                                 curHeight = height;
@@ -142,13 +143,14 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                                 .catch(function (err) { return console.log('Some err', err); })];
                     case 1:
                         _a.sent();
+                        console.log('Find goods with selectore ', waitSelectore);
                         height = 0;
                         _a.label = 2;
                     case 2:
                         if (!(height <= curHeight)) return [3 /*break*/, 5];
                         return [4 /*yield*/, nightmare
-                                .wait('#shop-products')
-                                .evaluate(function () { return document.querySelector('#shop-products').innerHTML; })
+                                .wait(waitSelectore)
+                                .evaluate(function () { return document.querySelector(waitSelectore).innerHTML; })
                                 .then(function (response) {
                                 // console.log('Responce ', response);
                                 order = getData(response);
@@ -169,51 +171,6 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
             });
         });
     }
-    function findVer1() {
-        return __awaiter(this, void 0, void 0, function () {
-            var prevHeight, curHeight;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log('find ver 1');
-                        prevHeight = -1, curHeight = 0;
-                        _a.label = 1;
-                    case 1:
-                        if (!(prevHeight !== curHeight)) return [3 /*break*/, 5];
-                        prevHeight = curHeight;
-                        return [4 /*yield*/, nightmare.evaluate(function () {
-                                return document.querySelector('#shop-products').scrollHeight;
-                            })
-                                .then(function (height) {
-                                curHeight = height;
-                                console.log('HeighT: ', height);
-                                console.log('diff: ', height - prevHeight);
-                            })
-                                .catch(function (err) { return console.log('Some err', err); })];
-                    case 2:
-                        _a.sent();
-                        return [4 /*yield*/, nightmare
-                                .wait('#shop-products')
-                                .evaluate(function () { return document.querySelector('#shop-products').innerHTML; })
-                                .then(function (response) {
-                                // console.log('Responce ', response);
-                                order = getData(response);
-                            }).catch(function (err) {
-                                console.log('Fail search', err);
-                            })];
-                    case 3:
-                        _a.sent();
-                        console.log('current HeighT: ', curHeight);
-                        return [4 /*yield*/, nightmare.scrollTo(curHeight, 0)
-                                .wait(1000)];
-                    case 4:
-                        _a.sent();
-                        return [3 /*break*/, 1];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    }
     var commonCards, goodMap, getData, waitSelectore, nightmare, order, _i, goodMap_1, it;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -221,7 +178,7 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                 commonCards = 0;
                 goodMap = new Map;
                 getData = function (html) {
-                    data = [];
+                    // let data = [];
                     var $ = cheerio.load(html);
                     var cardsCount = $('.products-list').children();
                     console.log('Cards count: ', cardsCount.length);
@@ -247,14 +204,14 @@ var getStoreByUrl = function (URL) { return __awaiter(void 0, void 0, void 0, fu
                     });
                     commonCards += cardsBlock.length;
                 };
-                waitSelectore = '#shop-products';
+                waitSelectore = "#shop-products";
                 console.log(URL);
-                nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 1200 });
+                nightmare = Nightmare({ show: true, waitTimeout: 4000, height: 1200 });
                 order = '-1';
                 console.log('nightmare create, get store');
                 return [4 /*yield*/, nightmare
                         .goto(URL)
-                        .wait('#shop-products')];
+                        .wait(waitSelectore)];
             case 1:
                 _a.sent();
                 return [4 /*yield*/, scroll()];
