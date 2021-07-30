@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -54,16 +54,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var path = require("path");
+// import fs from 'fs'
 var Service = __importStar(require("./scrap-service"));
 var csv = require("csv-parser");
+// import { json } from 'body-parser';
+var service_js_1 = require("./service.js");
+var scrap = new service_js_1.Scrap();
+// scrap.scroll('https://kazanexpress.ru/alistore');
+scrap.scroll('https://kazanexpress.ru/1001');
 // Create a new express app instance
 var app = express();
 // set static folder
 app.use(express.static(path.join(__dirname, '../public')));
-app.use(express.json());
+// app.use(express.json());
 var EventEmitter = require('events');
 var Stream = new EventEmitter(); // my event emitter instance
 app.get('/events', function (req, res) {
@@ -101,30 +118,45 @@ app.post('/scrap-service', function (req, res) {
             csvData.push(d);
     });
     CSV.on('end', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _i, csvData_1, itCsv, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var csvData_1, csvData_1_1, itCsv, _a, e_1_1;
+        var e_1, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     console.log('CSV file successfully processed');
-                    _i = 0, csvData_1 = csvData;
-                    _b.label = 1;
+                    _c.label = 1;
                 case 1:
-                    if (!(_i < csvData_1.length)) return [3 /*break*/, 4];
-                    itCsv = csvData_1[_i];
+                    _c.trys.push([1, 6, 7, 8]);
+                    csvData_1 = __values(csvData), csvData_1_1 = csvData_1.next();
+                    _c.label = 2;
+                case 2:
+                    if (!!csvData_1_1.done) return [3 /*break*/, 5];
+                    itCsv = csvData_1_1.value;
                     _a = itCsv;
                     return [4 /*yield*/, Service.getOrderByUrl(itCsv.URL)];
-                case 2:
-                    _a.Orders = _b.sent();
+                case 3:
+                    _a.Orders = _c.sent();
                     itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
                     console.log(itCsv);
                     Stream.emit("push", "test", itCsv);
-                    _b.label = 3;
-                case 3:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 4: return [4 /*yield*/, Service.writeCsvData(csvData)];
-                case 5:
-                    _b.sent();
+                    _c.label = 4;
+                case 4:
+                    csvData_1_1 = csvData_1.next();
+                    return [3 /*break*/, 2];
+                case 5: return [3 /*break*/, 8];
+                case 6:
+                    e_1_1 = _c.sent();
+                    e_1 = { error: e_1_1 };
+                    return [3 /*break*/, 8];
+                case 7:
+                    try {
+                        if (csvData_1_1 && !csvData_1_1.done && (_b = csvData_1.return)) _b.call(csvData_1);
+                    }
+                    finally { if (e_1) throw e_1.error; }
+                    return [7 /*endfinally*/];
+                case 8: return [4 /*yield*/, Service.writeCsvData(csvData)];
+                case 9:
+                    _c.sent();
                     return [2 /*return*/];
             }
         });

@@ -1,15 +1,22 @@
 import express = require('express');
 import path = require('path');
-import fs from 'fs'
+// import fs from 'fs'
 import * as Service from './scrap-service'
 import csv = require('csv-parser');
-import { json } from 'body-parser';
+// import { json } from 'body-parser';
+
+import {Scrap} from './service.js';
+
+const scrap = new Scrap();
+// scrap.scroll('https://kazanexpress.ru/alistore');
+scrap.scroll('https://kazanexpress.ru/1001');
+
 // Create a new express app instance
 const app: express.Application = express();
 
 // set static folder
 app.use(express.static(path.join(__dirname, '../public')));
-app.use(express.json());
+// app.use(express.json());
 
 const EventEmitter = require('events');
 

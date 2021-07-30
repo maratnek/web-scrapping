@@ -17,19 +17,22 @@
   "license": "ISC",
   "devDependencies": {
     "request": "^2.88.2",
-    "typescript": "^3.9.7"
+    "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@types/cheerio": "^0.22.30",
     "@types/express": "^4.17.7",
+    "@types/node": "^16.4.7",
     "body-parser": "^1.19.0",
     "busboy": "^0.3.1",
+    "cheerio": "^1.0.0-rc.10",
     "csv-parser": "^2.3.3",
     "csv-writer": "^1.6.0",
     "express": "^4.17.1",
-    "fast-csv": "^4.3.1",
+    "fast-csv": "^4.3.6",
     "http-status-codes": "^1.4.0",
+    "mongoose": "^5.13.0",
     "multer": "^1.4.2",
-    "cheerio": "^1.0.0-rc.3",
     "nightmare": "^3.0.2"
   },
   "engines": {
