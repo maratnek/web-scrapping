@@ -36,17 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __values = (this && this.__values) || function(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -54,6 +43,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Scrap = void 0;
 var Nightmare = require('nightmare');
 var cheerio_1 = __importDefault(require("cheerio"));
+var OrderGood = /** @class */ (function () {
+    function OrderGood(name, stars, order, title) {
+        this.stock_id = 0;
+        this.name = name;
+        this.stars = stars;
+        this.order = order;
+        this.title = title;
+    }
+    return OrderGood;
+}());
 var Scrap = /** @class */ (function () {
     function Scrap() {
         console.log('Scrap constructor');
@@ -77,22 +76,24 @@ var Scrap = /** @class */ (function () {
                                         return document.querySelector('footer').offsetTop;
                                     }).then(function (height) {
                                         curHeight = height;
-                                        console.log('HeighT: ', height);
-                                        console.log('diff: ', height - prevHeight);
+                                        // console.log('HeighT: ', height);
+                                        // console.log('diff: ', height - prevHeight);
                                     }).catch(function (err) { return console.log('Some err', err); })];
                             case 2:
                                 _a.sent();
-                                console.log('current HeighT: ', curHeight);
+                                // console.log('current HeighT: ', curHeight);
                                 return [4 /*yield*/, nightmare.scrollTo(curHeight, 0)
                                         .wait(1000)];
                             case 3:
+                                // console.log('current HeighT: ', curHeight);
                                 _a.sent();
                                 return [3 /*break*/, 1];
-                            case 4:
-                                console.log('Scroll to 0');
-                                return [4 /*yield*/, nightmare.scrollTo(0, 0)
-                                        .wait(1000)];
+                            case 4: 
+                            // console.log('Scroll to 0')
+                            return [4 /*yield*/, nightmare.scrollTo(0, 0)
+                                    .wait(1000)];
                             case 5:
+                                // console.log('Scroll to 0')
                                 _a.sent();
                                 return [2 /*return*/];
                         }
@@ -111,11 +112,10 @@ var Scrap = /** @class */ (function () {
                                         return document.querySelector('#shop-products').scrollHeight;
                                     }).then(function (height) {
                                         curHeight = height;
-                                        console.log('HeighT: ', height);
+                                        // console.log('HeighT: ', height);
                                     }).catch(function (err) { return console.log('Some err', err); })];
                             case 1:
                                 _a.sent();
-                                console.log('Find goods with selectore ', waitSelectore);
                                 height = 0;
                                 _a.label = 2;
                             case 2:
@@ -132,10 +132,11 @@ var Scrap = /** @class */ (function () {
                             case 3:
                                 _a.sent();
                                 height += 2000;
-                                console.log('current HeighT: ', height);
+                                // console.log('current HeighT: ', height);
                                 return [4 /*yield*/, nightmare.scrollTo(height, 0)
                                         .wait(1000)];
                             case 4:
+                                // console.log('current HeighT: ', height);
                                 _a.sent();
                                 return [3 /*break*/, 2];
                             case 5: return [2 /*return*/];
@@ -143,24 +144,22 @@ var Scrap = /** @class */ (function () {
                     });
                 });
             }
-            var commonCards, goodMap, getData, waitSelectore, nightmare, order, goodMap_1, goodMap_1_1, it;
-            var e_1, _a;
-            var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var commonCards, goodMap, getData, waitSelectore, nightmare;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         console.log('Start scroll scrap by url');
                         commonCards = 0;
-                        goodMap = new Map;
+                        goodMap = new Map();
                         getData = function (html) {
                             var data = [];
                             var $ = cheerio_1.default.load(html);
                             var cardsCount = $('.products-list').children();
-                            console.log('Cards count: ', cardsCount.length);
+                            // console.log('Cards count: ', cardsCount.length);
                             var cardLink = $('.card-express');
                             $('.card-info-block').each(function (i, elem) {
                                 // console.log('Element', elem);
-                                console.log(_this);
+                                // console.log(this);
                                 var link = $(elem).parent().parent().attr('href');
                                 var title = $(elem).children('.subtitle').text();
                                 // let stars : any = $(this).find('.raiting-wrapper').text();
@@ -168,20 +167,21 @@ var Scrap = /** @class */ (function () {
                                 var stars = $(elem).find('.raiting-wrapper').text().match(/\d.\d+/g);
                                 // console.log($(elem).find('.orders').contents());
                                 var order = $(elem).find('.orders').contents().filter(function (tt) {
-                                    console.log('tt', tt);
+                                    // console.log('tt', tt);
                                     // return this.nodeType == 3;
                                     // return tt.nodeType == 3;
                                     return tt == '1';
                                 }).text();
-                                console.log(order);
+                                // console.log(order);
                                 order = order.replace(/\n/g, ' ');
                                 order = order.match(/\d+/g);
-                                console.log("Cards info: " + i + " card dummy: " + title);
-                                console.log("Cards info: " + i + " card dummy: " + order);
-                                console.log("Cards info: stars: " + stars);
-                                console.log("link: " + link);
+                                // console.log(`Cards info: ${i} card dummy: ${title}`);
+                                // console.log(`Cards info: ${i} card dummy: ${order}`);
+                                // console.log(`Cards info: stars: ${stars}`);
+                                // console.log(`link: ${link}`);
+                                var good = new OrderGood(link, parseInt(stars ? stars : 0), parseInt(order ? order : 0), title);
                                 if (link)
-                                    goodMap.set(link, { stars: stars, order: order, title: title });
+                                    goodMap.set(link, good);
                                 ++commonCards;
                                 // if (link)
                                 // saveGood({ link: link, stars: stars, order, title });
@@ -189,39 +189,28 @@ var Scrap = /** @class */ (function () {
                         };
                         waitSelectore = "#shop-products";
                         console.log(URL);
-                        nightmare = Nightmare({ show: false, waitTimeout: 6000, height: 3000 });
-                        order = '-1';
+                        nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 3000 });
                         console.log('nightmare create, get store');
                         return [4 /*yield*/, nightmare
                                 .goto(URL)
                                 .wait(waitSelectore)];
                     case 1:
-                        _b.sent();
+                        _a.sent();
                         return [4 /*yield*/, scroll()];
                     case 2:
-                        _b.sent();
+                        _a.sent();
                         return [4 /*yield*/, findGoods()];
                     case 3:
-                        _b.sent();
+                        _a.sent();
                         return [4 /*yield*/, nightmare.end()];
                     case 4:
-                        _b.sent();
-                        try {
-                            for (goodMap_1 = __values(goodMap), goodMap_1_1 = goodMap_1.next(); !goodMap_1_1.done; goodMap_1_1 = goodMap_1.next()) {
-                                it = goodMap_1_1.value;
-                                console.log('Map it: ', it);
-                            }
-                        }
-                        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-                        finally {
-                            try {
-                                if (goodMap_1_1 && !goodMap_1_1.done && (_a = goodMap_1.return)) _a.call(goodMap_1);
-                            }
-                            finally { if (e_1) throw e_1.error; }
-                        }
-                        console.log('Good map length:', goodMap.size);
-                        console.log('Common cards length: ', commonCards);
-                        return [2 /*return*/, order];
+                        _a.sent();
+                        // for (const it of goodMap) {
+                        //     console.log('Map it: ', it);
+                        // }
+                        // console.log('Good map length:', goodMap.size);
+                        // console.log('Common cards length: ', commonCards);
+                        return [2 /*return*/, goodMap];
                 }
             });
         });

@@ -73,9 +73,57 @@ var Service = __importStar(require("./scrap-service"));
 var csv = require("csv-parser");
 // import { json } from 'body-parser';
 var service_js_1 = require("./service.js");
+var db_js_1 = require("./db.js");
 var scrap = new service_js_1.Scrap();
-// scrap.scroll('https://kazanexpress.ru/alistore');
-scrap.scroll('https://kazanexpress.ru/1001');
+// console.log(goodMap);
+// scrap.scroll('https://kazanexpress.ru/1001');
+db_js_1.connect(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var index, goodMap, goodMap_1, goodMap_1_1, pair, e_1;
+    var e_2, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                console.log("Start scrap");
+                index = 12;
+                _b.label = 1;
+            case 1:
+                if (!(index != 2000)) return [3 /*break*/, 6];
+                _b.label = 2;
+            case 2:
+                _b.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, scrap.scroll("https://kazanexpress.ru/" + index)];
+            case 3:
+                goodMap = _b.sent();
+                try {
+                    for (goodMap_1 = (e_2 = void 0, __values(goodMap)), goodMap_1_1 = goodMap_1.next(); !goodMap_1_1.done; goodMap_1_1 = goodMap_1.next()) {
+                        pair = goodMap_1_1.value;
+                        // console.log("pair1: ", pair[0]);
+                        // console.log("pair2: ", pair[1]);
+                        pair[1].stock_id = index;
+                        // pair[1].order_date = [];
+                        ////////////////////////////////
+                        db_js_1.addGood(pair);
+                    }
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (goodMap_1_1 && !goodMap_1_1.done && (_a = goodMap_1.return)) _a.call(goodMap_1);
+                    }
+                    finally { if (e_2) throw e_2.error; }
+                }
+                return [3 /*break*/, 5];
+            case 4:
+                e_1 = _b.sent();
+                console.log("Somethisn wrong. Try next ", e_1);
+                return [3 /*break*/, 5];
+            case 5:
+                index++;
+                return [3 /*break*/, 1];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); });
 // Create a new express app instance
 var app = express();
 // set static folder
@@ -118,8 +166,8 @@ app.post('/scrap-service', function (req, res) {
             csvData.push(d);
     });
     CSV.on('end', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var csvData_1, csvData_1_1, itCsv, _a, e_1_1;
-        var e_1, _b;
+        var csvData_1, csvData_1_1, itCsv, _a, e_3_1;
+        var e_3, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -145,14 +193,14 @@ app.post('/scrap-service', function (req, res) {
                     return [3 /*break*/, 2];
                 case 5: return [3 /*break*/, 8];
                 case 6:
-                    e_1_1 = _c.sent();
-                    e_1 = { error: e_1_1 };
+                    e_3_1 = _c.sent();
+                    e_3 = { error: e_3_1 };
                     return [3 /*break*/, 8];
                 case 7:
                     try {
                         if (csvData_1_1 && !csvData_1_1.done && (_b = csvData_1.return)) _b.call(csvData_1);
                     }
-                    finally { if (e_1) throw e_1.error; }
+                    finally { if (e_3) throw e_3.error; }
                     return [7 /*endfinally*/];
                 case 8: return [4 /*yield*/, Service.writeCsvData(csvData)];
                 case 9:
@@ -172,4 +220,6 @@ app.post('/scrap-service', function (req, res) {
     });
 });
 var PORT = process.env.PORT || 5000;
-app.listen(PORT, function () { return console.log("App is listening on port https://localhost:" + PORT + "!"); });
+app.listen(PORT, function () {
+    console.log("App is listening on port https://localhost:" + PORT + "!");
+});
