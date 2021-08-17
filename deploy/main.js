@@ -76,30 +76,31 @@ var service_js_1 = require("./service.js");
 var db_js_1 = require("./db.js");
 var scrap = new service_js_1.Scrap();
 var scrapStocks = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var index, goodMap, goodMap_1, goodMap_1_1, pair, e_1;
+    var index, is_stock, goodMap, goodMap_1, goodMap_1_1, pair, e_1;
     var e_2, _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 console.log("Start scrap");
-                index = 161;
+                index = 1000;
                 _b.label = 1;
             case 1:
-                if (!(index != 2000)) return [3 /*break*/, 6];
+                if (!(index != 2000)) return [3 /*break*/, 8];
                 _b.label = 2;
             case 2:
-                _b.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, scrap.scroll("https://kazanexpress.ru/" + index)];
+                _b.trys.push([2, 6, , 7]);
+                return [4 /*yield*/, scrap.is_stock("https://kazanexpress.ru/" + index)];
             case 3:
+                is_stock = _b.sent();
+                console.log("Index: " + index + " It's " + (is_stock ? "" : "not") + " stock");
+                if (!is_stock) return [3 /*break*/, 5];
+                return [4 /*yield*/, scrap.scroll("https://kazanexpress.ru/" + index)];
+            case 4:
                 goodMap = _b.sent();
                 try {
                     for (goodMap_1 = (e_2 = void 0, __values(goodMap)), goodMap_1_1 = goodMap_1.next(); !goodMap_1_1.done; goodMap_1_1 = goodMap_1.next()) {
                         pair = goodMap_1_1.value;
-                        // console.log("pair1: ", pair[0]);
-                        // console.log("pair2: ", pair[1]);
                         pair[1].stock_id = index;
-                        // pair[1].order_date = [];
-                        ////////////////////////////////
                         db_js_1.addGood(pair);
                     }
                 }
@@ -110,15 +111,16 @@ var scrapStocks = function () { return __awaiter(void 0, void 0, void 0, functio
                     }
                     finally { if (e_2) throw e_2.error; }
                 }
-                return [3 /*break*/, 5];
-            case 4:
+                _b.label = 5;
+            case 5: return [3 /*break*/, 7];
+            case 6:
                 e_1 = _b.sent();
                 console.log("Somethisn wrong. Try next ", e_1);
-                return [3 /*break*/, 5];
-            case 5:
+                return [3 /*break*/, 7];
+            case 7:
                 index++;
                 return [3 /*break*/, 1];
-            case 6: return [2 /*return*/];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
@@ -128,7 +130,7 @@ var findAllStocks = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 console.log("Find all stocks");
-                index = 1001;
+                index = 995;
                 _a.label = 1;
             case 1:
                 if (!(index != 2000)) return [3 /*break*/, 6];
@@ -151,10 +153,17 @@ var findAllStocks = function () { return __awaiter(void 0, void 0, void 0, funct
         }
     });
 }); };
-findAllStocks();
-// connect(async () => {
-// await scrapStocks();
-// });
+// findAllStocks();
+db_js_1.connect(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, scrapStocks()];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
 // Create a new express app instance
 var app = express();
 // set static folder

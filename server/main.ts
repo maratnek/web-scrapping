@@ -12,18 +12,18 @@ const scrap = new Scrap();
 
 let scrapStocks = async () => {
     console.log("Start scrap");
-    let index: number = 161;
+    let index: number = 1000;
     while (index != 2000) {
 
         try {
-            let goodMap = await scrap.scroll(`https://kazanexpress.ru/${index}`);
-            for (const pair of goodMap) {
-                // console.log("pair1: ", pair[0]);
-                // console.log("pair2: ", pair[1]);
-                pair[1].stock_id = index;
-                // pair[1].order_date = [];
-                ////////////////////////////////
-                addGood(pair);
+            let is_stock = await scrap.is_stock(`https://kazanexpress.ru/${index}`);
+            console.log(`Index: ${index} It's ${is_stock ?"":"not"} stock`);
+            if (is_stock) {
+                let goodMap = await scrap.scroll(`https://kazanexpress.ru/${index}`);
+                for (const pair of goodMap) {
+                    pair[1].stock_id = index;
+                    addGood(pair);
+                }
             }
         } catch (e) {
             console.log("Somethisn wrong. Try next ", e);
@@ -34,16 +34,12 @@ let scrapStocks = async () => {
 
 let findAllStocks = async () => {
     console.log("Find all stocks");
-    let index: number = 1001;
+    let index: number = 995;
     while (index != 2000) {
 
         try {
             let is_stock = await scrap.is_stock(`https://kazanexpress.ru/${index}`);
                 console.log(`Index: ${index} It's ${is_stock ?"":"not"} stock`);
-            // for (const pair of goodMap) {
-            //     pair[1].stock_id = index;
-            //     addGood(pair);
-            // }
         } catch (e) {
             console.log("Somethisn wrong. Try next ", e);
         }
@@ -51,10 +47,10 @@ let findAllStocks = async () => {
     }
 }
 
-findAllStocks();
-// connect(async () => {
-    // await scrapStocks();
-// });
+// findAllStocks();
+connect(async () => {
+    await scrapStocks();
+});
 
 // Create a new express app instance
 const app: express.Application = express();
