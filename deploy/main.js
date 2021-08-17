@@ -75,16 +75,14 @@ var csv = require("csv-parser");
 var service_js_1 = require("./service.js");
 var db_js_1 = require("./db.js");
 var scrap = new service_js_1.Scrap();
-// console.log(goodMap);
-// scrap.scroll('https://kazanexpress.ru/1001');
-db_js_1.connect(function () { return __awaiter(void 0, void 0, void 0, function () {
+var scrapStocks = function () { return __awaiter(void 0, void 0, void 0, function () {
     var index, goodMap, goodMap_1, goodMap_1_1, pair, e_1;
     var e_2, _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 console.log("Start scrap");
-                index = 12;
+                index = 161;
                 _b.label = 1;
             case 1:
                 if (!(index != 2000)) return [3 /*break*/, 6];
@@ -123,7 +121,40 @@ db_js_1.connect(function () { return __awaiter(void 0, void 0, void 0, function 
             case 6: return [2 /*return*/];
         }
     });
-}); });
+}); };
+var findAllStocks = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var index, is_stock, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("Find all stocks");
+                index = 1001;
+                _a.label = 1;
+            case 1:
+                if (!(index != 2000)) return [3 /*break*/, 6];
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, scrap.is_stock("https://kazanexpress.ru/" + index)];
+            case 3:
+                is_stock = _a.sent();
+                console.log("Index: " + index + " It's " + (is_stock ? "" : "not") + " stock");
+                return [3 /*break*/, 5];
+            case 4:
+                e_3 = _a.sent();
+                console.log("Somethisn wrong. Try next ", e_3);
+                return [3 /*break*/, 5];
+            case 5:
+                index++;
+                return [3 /*break*/, 1];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+findAllStocks();
+// connect(async () => {
+// await scrapStocks();
+// });
 // Create a new express app instance
 var app = express();
 // set static folder
@@ -166,8 +197,8 @@ app.post('/scrap-service', function (req, res) {
             csvData.push(d);
     });
     CSV.on('end', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var csvData_1, csvData_1_1, itCsv, _a, e_3_1;
-        var e_3, _b;
+        var csvData_1, csvData_1_1, itCsv, _a, e_4_1;
+        var e_4, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -193,14 +224,14 @@ app.post('/scrap-service', function (req, res) {
                     return [3 /*break*/, 2];
                 case 5: return [3 /*break*/, 8];
                 case 6:
-                    e_3_1 = _c.sent();
-                    e_3 = { error: e_3_1 };
+                    e_4_1 = _c.sent();
+                    e_4 = { error: e_4_1 };
                     return [3 /*break*/, 8];
                 case 7:
                     try {
                         if (csvData_1_1 && !csvData_1_1.done && (_b = csvData_1.return)) _b.call(csvData_1);
                     }
-                    finally { if (e_3) throw e_3.error; }
+                    finally { if (e_4) throw e_4.error; }
                     return [7 /*endfinally*/];
                 case 8: return [4 /*yield*/, Service.writeCsvData(csvData)];
                 case 9:

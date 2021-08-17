@@ -57,6 +57,50 @@ var Scrap = /** @class */ (function () {
     function Scrap() {
         console.log('Scrap constructor');
     }
+    Scrap.prototype.is_stock = function (URL) {
+        return __awaiter(this, void 0, void 0, function () {
+            var checkData, waitSelectore, is_exist, NGmare;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        checkData = function (html) {
+                            var $ = cheerio_1.default.load(html);
+                            // console.log(html);
+                            var page404 = $('.page404-express');
+                            if (page404 && page404.length > 0) {
+                                console.log("page404", page404.text());
+                            }
+                            else {
+                                var shop = $('#shop-header-container');
+                                if (shop) {
+                                    console.log("Add new shop", shop.text());
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
+                        waitSelectore = ".main-content";
+                        console.log(URL);
+                        is_exist = false;
+                        NGmare = Nightmare({ show: false });
+                        return [4 /*yield*/, NGmare
+                                .goto(URL)
+                                .wait(waitSelectore)
+                                .evaluate(function () { return document.querySelector(".main-content").innerHTML; })
+                                .then(function (response) {
+                                // console.log('Responce ', response);
+                                is_exist = checkData(response);
+                            }).catch(function (err) {
+                                console.log('Fail search', err);
+                            })];
+                    case 1:
+                        _a.sent();
+                        // NGmare.end();
+                        return [2 /*return*/, is_exist];
+                }
+            });
+        });
+    };
     Scrap.prototype.scroll = function (URL) {
         return __awaiter(this, void 0, void 0, function () {
             function scroll() {
@@ -190,6 +234,7 @@ var Scrap = /** @class */ (function () {
                         waitSelectore = "#shop-products";
                         console.log(URL);
                         nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 3000 });
+                        // let NGmare: any = Nightmare({ show: false });
                         console.log('nightmare create, get store');
                         return [4 /*yield*/, nightmare
                                 .goto(URL)

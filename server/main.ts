@@ -9,11 +9,10 @@ import { Scrap } from './service.js';
 import { connect, addGood } from './db.js';
 
 const scrap = new Scrap();
-// console.log(goodMap);
-// scrap.scroll('https://kazanexpress.ru/1001');
-connect(async () => {
+
+let scrapStocks = async () => {
     console.log("Start scrap");
-    let index: number = 12;
+    let index: number = 161;
     while (index != 2000) {
 
         try {
@@ -31,8 +30,31 @@ connect(async () => {
         }
         index++;
     }
+}
 
-});
+let findAllStocks = async () => {
+    console.log("Find all stocks");
+    let index: number = 1001;
+    while (index != 2000) {
+
+        try {
+            let is_stock = await scrap.is_stock(`https://kazanexpress.ru/${index}`);
+                console.log(`Index: ${index} It's ${is_stock ?"":"not"} stock`);
+            // for (const pair of goodMap) {
+            //     pair[1].stock_id = index;
+            //     addGood(pair);
+            // }
+        } catch (e) {
+            console.log("Somethisn wrong. Try next ", e);
+        }
+        index++;
+    }
+}
+
+findAllStocks();
+// connect(async () => {
+    // await scrapStocks();
+// });
 
 // Create a new express app instance
 const app: express.Application = express();

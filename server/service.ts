@@ -18,9 +18,47 @@ class OrderGood {
 }
 
 export class Scrap {
+
+
     constructor() {
         console.log('Scrap constructor');
     }
+    async is_stock(URL: string) {
+        let checkData = (html: string):boolean => {
+            const $ = cheerio.load(html);
+            // console.log(html);
+            let page404 = $('.page404-express');
+            if (page404 && page404.length > 0) { 
+                console.log("page404", page404.text());
+            } else { 
+                let shop = $('#shop-header-container');
+                if (shop) { 
+                    console.log("Add new shop", shop.text());
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        const waitSelectore = ".main-content";
+        console.log(URL)
+        let is_exist = false;
+
+        let NGmare: any = Nightmare({ show: false });
+        await NGmare
+            .goto(URL)
+            .wait(waitSelectore)
+            .evaluate(() => document.querySelector(".main-content")!.innerHTML)
+                    .then((response: string) => {
+                        // console.log('Responce ', response);
+                        is_exist = checkData(response);
+                    }).catch((err: number) => {
+                        console.log('Fail search', err);
+                    });
+            // NGmare.end();
+        return is_exist;
+    }
+
     async scroll(URL: string) {
         console.log('Start scroll scrap by url');
 
@@ -72,6 +110,8 @@ export class Scrap {
 
         console.log(URL)
         const nightmare = Nightmare({ show: false, waitTimeout: 4000, height: 3000 })
+
+        // let NGmare: any = Nightmare({ show: false });
         console.log('nightmare create, get store')
 
         await nightmare
@@ -146,4 +186,6 @@ export class Scrap {
         return goodMap;
 
     }
+
+
 }
