@@ -12,8 +12,8 @@ const scrap = new Scrap();
 
 let scrapStocks = async () => {
     console.log("Start scrap");
-    let index: number = 1000;
-    while (index != 2000) {
+    let index: number = Number(process.env.COUNT) || 0;
+    while (index != 100000) {
 
         try {
             let is_stock = await scrap.is_stock(`https://kazanexpress.ru/${index}`);

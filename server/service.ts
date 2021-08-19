@@ -19,7 +19,7 @@ class OrderGood {
 
 export class Scrap {
 
-    nightmare: any = Nightmare({ show: false, waitTimeout: 4000 });
+    nightmare: any = Nightmare({ show: true, waitTimeout: 4000 });
 
     constructor() {
         console.log('Scrap constructor');

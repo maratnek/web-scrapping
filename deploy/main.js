@@ -82,10 +82,10 @@ var scrapStocks = function () { return __awaiter(void 0, void 0, void 0, functio
         switch (_b.label) {
             case 0:
                 console.log("Start scrap");
-                index = 1000;
+                index = Number(process.env.COUNT) || 0;
                 _b.label = 1;
             case 1:
-                if (!(index != 2000)) return [3 /*break*/, 8];
+                if (!(index != 100000)) return [3 /*break*/, 8];
                 _b.label = 2;
             case 2:
                 _b.trys.push([2, 6, , 7]);

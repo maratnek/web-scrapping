@@ -24,7 +24,10 @@ RUN apt-get install -y \
   libxss1 \
   libnss3-dev \
   gcc-multilib \
-  g++-multilib
+  g++-multilib \
+  libgtk-3.dev
+
+RUN apt-get -y install libxss1 libgconf2-4
 
 # ENV DEBUG="nightmare"
 
@@ -34,18 +37,20 @@ WORKDIR /usr/src/app
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-ADD package.json .
+# COPY package.json .
+COPY . .
 
 RUN npm install
 RUN npm install nightmare
 
-# RUN npm audit fix --force
+RUN npm audit fix --force
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY deploy .
+# COPY deploy .
 
-ENTRYPOINT DEBUG=nightmare:*,electron:* xvfb-run --server-args="-screen 0 1280x2000x24" npm start
+# ENTRYPOINT DEBUG=nightmare:*,electron:* xvfb-run --server-args="-screen 0 1280x2000x24" npm start
+ENTRYPOINT xvfb-run --server-args="-screen 0 1280x2000x24" npm start
 
 EXPOSE 5000
