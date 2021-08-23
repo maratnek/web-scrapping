@@ -55,7 +55,7 @@ var OrderGood = /** @class */ (function () {
 }());
 var Scrap = /** @class */ (function () {
     function Scrap() {
-        this.nightmare = Nightmare({ show: true, waitTimeout: 4000 });
+        this.nightmare = Nightmare({ show: false, waitTimeout: 4000 });
         console.log('Scrap constructor');
     }
     Scrap.prototype.is_stock = function (URL) {
