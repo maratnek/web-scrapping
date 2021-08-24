@@ -40,19 +40,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scrap = void 0;
+exports.Scrap = exports.OrderGood = void 0;
 var Nightmare = require('nightmare');
 var cheerio_1 = __importDefault(require("cheerio"));
 var OrderGood = /** @class */ (function () {
-    function OrderGood(name, stars, order, title) {
-        this.stock_id = 0;
+    function OrderGood(name, stars, order, price, old_price, title) {
+        this.stock_id = '';
         this.name = name;
         this.stars = stars;
         this.order = order;
         this.title = title;
+        this.price = price;
+        this.old_price = old_price;
     }
     return OrderGood;
 }());
+exports.OrderGood = OrderGood;
 var Scrap = /** @class */ (function () {
     function Scrap() {
         this.nightmare = Nightmare({ show: false, waitTimeout: 4000 });
@@ -150,7 +153,9 @@ var Scrap = /** @class */ (function () {
             }).text();
             order = order.replace(/\n/g, ' ');
             order = order.match(/\d+/g);
-            var good = new OrderGood(link, parseInt(stars ? stars : 0), parseInt(order ? order : 0), title);
+            var price = $(elem).find('.product-card-price').text().match(/\d.\d+/g);
+            var old_price = $(elem).find('.product-card-old-price').text().match(/\d.\d+/g);
+            var good = new OrderGood(link, parseInt(stars ? stars : 0), parseInt(order ? order : 0), parseInt(price ? price : 0), parseInt(old_price ? old_price : 0), title);
             if (link)
                 goodMap.set(link, good);
             // ++commonCards;
@@ -164,6 +169,7 @@ var Scrap = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        goodMap = new Map();
                         curHeight = 0;
                         return [4 /*yield*/, this.nightmare.evaluate(function () {
                                 return document.querySelector('#shop-products').scrollHeight;

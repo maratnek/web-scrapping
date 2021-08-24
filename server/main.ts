@@ -21,7 +21,7 @@ let scrapStocks = async () => {
             if (is_stock) {
                 let goodMap = await scrap.scroll(`https://kazanexpress.ru/${index}`);
                 for (const pair of goodMap) {
-                    pair[1].stock_id = index;
+                    pair[1].stock_id = index.toString();
                     addGood(pair);
                 }
             }
@@ -49,7 +49,13 @@ let findAllStocks = async () => {
 
 // findAllStocks();
 connect(async () => {
-    await scrapStocks();
+    // await scrapStocks();
+    let index = 'mastera';
+                let goodMap = await scrap.scroll(`https://kazanexpress.ru/${index}`);
+                for (const pair of goodMap) {
+                    pair[1].stock_id = index;
+                    addGood(pair);
+                }
 });
 
 // Create a new express app instance

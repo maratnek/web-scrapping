@@ -100,7 +100,7 @@ var scrapStocks = function () { return __awaiter(void 0, void 0, void 0, functio
                 try {
                     for (goodMap_1 = (e_2 = void 0, __values(goodMap)), goodMap_1_1 = goodMap_1.next(); !goodMap_1_1.done; goodMap_1_1 = goodMap_1.next()) {
                         pair = goodMap_1_1.value;
-                        pair[1].stock_id = index;
+                        pair[1].stock_id = index.toString();
                         db_js_1.addGood(pair);
                     }
                 }
@@ -155,11 +155,29 @@ var findAllStocks = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 // findAllStocks();
 db_js_1.connect(function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, scrapStocks()];
+    var index, goodMap, goodMap_2, goodMap_2_1, pair;
+    var e_4, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                index = 'mastera';
+                return [4 /*yield*/, scrap.scroll("https://kazanexpress.ru/" + index)];
             case 1:
-                _a.sent();
+                goodMap = _b.sent();
+                try {
+                    for (goodMap_2 = __values(goodMap), goodMap_2_1 = goodMap_2.next(); !goodMap_2_1.done; goodMap_2_1 = goodMap_2.next()) {
+                        pair = goodMap_2_1.value;
+                        pair[1].stock_id = index;
+                        db_js_1.addGood(pair);
+                    }
+                }
+                catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                finally {
+                    try {
+                        if (goodMap_2_1 && !goodMap_2_1.done && (_a = goodMap_2.return)) _a.call(goodMap_2);
+                    }
+                    finally { if (e_4) throw e_4.error; }
+                }
                 return [2 /*return*/];
         }
     });
@@ -206,8 +224,8 @@ app.post('/scrap-service', function (req, res) {
             csvData.push(d);
     });
     CSV.on('end', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var csvData_1, csvData_1_1, itCsv, _a, e_4_1;
-        var e_4, _b;
+        var csvData_1, csvData_1_1, itCsv, _a, e_5_1;
+        var e_5, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -233,14 +251,14 @@ app.post('/scrap-service', function (req, res) {
                     return [3 /*break*/, 2];
                 case 5: return [3 /*break*/, 8];
                 case 6:
-                    e_4_1 = _c.sent();
-                    e_4 = { error: e_4_1 };
+                    e_5_1 = _c.sent();
+                    e_5 = { error: e_5_1 };
                     return [3 /*break*/, 8];
                 case 7:
                     try {
                         if (csvData_1_1 && !csvData_1_1.done && (_b = csvData_1.return)) _b.call(csvData_1);
                     }
-                    finally { if (e_4) throw e_4.error; }
+                    finally { if (e_5) throw e_5.error; }
                     return [7 /*endfinally*/];
                 case 8: return [4 /*yield*/, Service.writeCsvData(csvData)];
                 case 9:

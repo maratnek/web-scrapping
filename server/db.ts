@@ -65,7 +65,13 @@ let addGood = (prepared_good: any) => {
                 good.order_date = [child];
             } else {
                 let last_child = good.order_date[good.order_date.length - 1];
-                let child2 = { order: prepared_good[1].order, stars: prepared_good[1].stars, req_count: good.order_date.length };
+                let child2 = { 
+                    order: prepared_good[1].order, 
+                    stars: prepared_good[1].stars, 
+                    price: prepared_good[1].price,
+                    old_price: prepared_good[1].old_price,
+                    req_count: good.order_date.length 
+                };
                 // let date = good.children[0].date;
                 // console.log("time: ", date.getHours(), date.getMinutes(), date.getSeconds());
                 if (last_child.order < child2.order) {
@@ -80,12 +86,22 @@ let addGood = (prepared_good: any) => {
                 });
         }).catch((err:any) => {
             // console.log(err);
-            const good = new Good(prepared_good[1]);
-            let child = { order: prepared_good[1].order, stars: prepared_good[1].stars, req_count: 0 };
-            good.order_date.push(child);
+            let child = { 
+                order: prepared_good[1].order, 
+                stars: prepared_good[1].stars, 
+                price: prepared_good[1].price, 
+                old_price: prepared_good[1].old_price, 
+                req_count: 0 
+            };
+            let good = new Good({
+                stock_id: prepared_good[1].stock_id,
+                name: prepared_good[1].name,
+                title: prepared_good[1].title,
+                order_date: [child],
+            });
             // if (prepared_good[1].order_date !== undefined) {
             // }
-            console.log("Try to save", good);
+            console.log("Try to save", good, prepared_good[1]);
             // Good.findOneAndUpdate({ name: good.name },
             //     good, { upsert: true }, (err, res) => {
             //         if (err) { console.log("Error findOneAndUpdate",err); }

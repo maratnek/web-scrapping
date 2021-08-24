@@ -3,17 +3,21 @@
 const Nightmare = require('nightmare');
 import cheerio from 'cheerio';
 
-class OrderGood {
+export class OrderGood {
     name: string;
     stars: number;
     order: number;
+    price: number;
+    old_price: number;
     title: string;
-    stock_id: number = 0;
-    constructor(name: string, stars: number, order: number, title: string) {
+    stock_id: string = '';
+    constructor(name: string, stars: number, order: number, price: number, old_price: number, title: string) {
         this.name = name;
         this.stars = stars;
         this.order = order;
         this.title = title;
+        this.price = price;
+        this.old_price = old_price;
     }
 }
 
@@ -93,7 +97,14 @@ export class Scrap {
                 }).text();
                 order = order.replace(/\n/g, ' ');
                 order = order.match(/\d+/g);
-                let good = new OrderGood(link!, parseInt(stars!? stars: 0), parseInt(order!? order: 0), title);
+                let price : any = $(elem).find('.product-card-price').text().match(/\d.\d+/g);
+                let old_price : any = $(elem).find('.product-card-old-price').text().match(/\d.\d+/g);
+                let good = new OrderGood(link!, 
+                    parseInt(stars! ? stars : 0), 
+                    parseInt(order! ? order : 0), 
+                    parseInt(price! ? price : 0), 
+                    parseInt(old_price! ? old_price : 0), 
+                    title);
                 if (link)
                     goodMap.set(link, good);
                 // ++commonCards;
@@ -103,7 +114,7 @@ export class Scrap {
 
         async findGoods() {
             // console.log('Find goods with selectore ', waitSelectore);
-            let goodMap : any;
+            let goodMap = new Map<string, OrderGood>();
             let curHeight = 0;
             await this.nightmare.evaluate(() => {
                 return document.querySelector('#shop-products')!.scrollHeight;
@@ -147,7 +158,7 @@ export class Scrap {
             .wait(waitSelectore)
 
         await this.NGscroll();
-        let goodMap = await this.findGoods();
+        let goodMap : Map<string, OrderGood> = await this.findGoods();
         // await nightmare.end();
 
         return goodMap;

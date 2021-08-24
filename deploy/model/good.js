@@ -9,12 +9,14 @@ var Schema = mongoose_1.default.Schema;
 var orderSchema = new Schema({
     order: { type: Number, required: true },
     stars: { type: Number, required: false },
+    price: { type: Number, required: true },
+    old_price: { type: Number, required: false },
     req_count: { type: Number, required: true },
     date: { type: Date, default: Date.now }
 });
 var goodSchema = new Schema({
     stock_id: {
-        type: Number,
+        type: String,
         required: true,
     },
     name: {
