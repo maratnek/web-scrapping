@@ -89,6 +89,28 @@ app.get('/events', async function (req, res) {
 });;
 
 // parse application/json
+app.get('/stock-goods', async function (req, res) {
+    console.log(req.url);
+    res.set({
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'text/event-stream',
+        'Connection': 'keep-alive'
+    });
+    res.flushHeaders();
+    
+    if (req.query && req.query.reqStockName)
+        res.write(`req stock name ${req.query.reqStockName}`);
+
+    // Tell the client to retry every 10 seconds if connectivity is lost
+    // res.write('retry: 10000\n\n');
+    // let count = 0;
+    // Stream.on("push", function (event: any, data: any) {
+    //     //console.log('push data');
+    //     //res.write("event: " + String(event) + "\n" + "data: " + JSON.stringify(data) + "\n\n");
+
+    //     res.write(`data: ${JSON.stringify(data)}\n\n`);
+    // });
+});;
 
 
 
@@ -105,14 +127,14 @@ app.post('/scrap-service', (req, res) => {
     CSV.on('end', async () => {
         console.log('CSV file successfully processed');
         for (const itCsv of csvData) {
-            itCsv.Orders = await Service.getOrderByUrl(itCsv.URL);
+            itCsv.Orders = await scrap.getOrderByUrl(itCsv.URL);
             itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
 
             console.log(itCsv)
             Stream.emit("push", "test", itCsv);
 
         }
-        await Service.writeCsvData(csvData);
+        await scrap.writeCsvData(csvData);
     });
 
     req.pipe(CSV)

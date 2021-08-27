@@ -43,6 +43,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Scrap = exports.OrderGood = void 0;
 var Nightmare = require('nightmare');
 var cheerio_1 = __importDefault(require("cheerio"));
+var fs_1 = __importDefault(require("fs"));
+var csv_writer_1 = require("csv-writer");
 var OrderGood = /** @class */ (function () {
     function OrderGood(name, stars, order, price, old_price, title) {
         this.stock_id = '';
@@ -61,6 +63,72 @@ var Scrap = /** @class */ (function () {
         this.nightmare = Nightmare({ show: false, waitTimeout: 4000 });
         console.log('Scrap constructor');
     }
+    Scrap.prototype.writeCsvData = function (csv_data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var fileName, csvWriter;
+            return __generator(this, function (_a) {
+                fileName = "output/kznexpress-out-" + Date.now() + ".csv";
+                fs_1.default.writeFileSync(fileName, '');
+                csvWriter = csv_writer_1.createObjectCsvWriter({
+                    path: fileName,
+                    fieldDelimiter: ';',
+                    recordDelimiter: '\r\n',
+                    encoding: 'utf8',
+                    header: [
+                        { id: 'URL', title: 'URL' },
+                        { id: 'Orders', title: 'ORDERS' },
+                        { id: 'Count', title: 'COUNT' }
+                    ]
+                });
+                console.log('Write to file', csv_data);
+                csvWriter.writeRecords(csv_data)
+                    .then(function () { return console.log('The CSV file was written successfully'); });
+                return [2 /*return*/];
+            });
+        });
+    };
+    Scrap.prototype.getOrderByUrl = function (URL) {
+        return __awaiter(this, void 0, void 0, function () {
+            var getData, order;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        getData = function (html) {
+                            var data = [];
+                            var $ = cheerio_1.default.load(html);
+                            var order = $('.stats .orders').text();
+                            console.log('Order:', order);
+                            var str = $('.region').text();
+                            console.log(str);
+                            order = order.replace(/\n/g, ' ');
+                            order = order.match(/\d+/g);
+                            console.log(order);
+                            if (order) {
+                                console.log('data nightmare: ', order[0]);
+                                return order[0];
+                            }
+                            else
+                                return '0';
+                        };
+                        console.log(URL);
+                        order = '-1';
+                        console.log('nightmare create');
+                        return [4 /*yield*/, this.nightmare
+                                .goto(URL)
+                                .wait('#product-info')
+                                .evaluate(function () { return document.querySelector('#product-info').innerHTML; })
+                                .then(function (response) {
+                                order = getData(response);
+                            }).catch(function (err) {
+                                console.log('Fail search', err);
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, order];
+                }
+            });
+        });
+    };
     Scrap.prototype.is_stock = function (URL) {
         return __awaiter(this, void 0, void 0, function () {
             var checkData, waitSelectore, is_exist;

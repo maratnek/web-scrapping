@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -68,8 +49,6 @@ var __values = (this && this.__values) || function(o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var path = require("path");
-// import fs from 'fs'
-var Service = __importStar(require("./scrap-service"));
 var csv = require("csv-parser");
 // import { json } from 'body-parser';
 var service_js_1 = require("./service.js");
@@ -214,6 +193,23 @@ app.get('/events', function (req, res) {
 });
 ;
 // parse application/json
+app.get('/stock-goods', function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            console.log(req.url);
+            res.set({
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'text/event-stream',
+                'Connection': 'keep-alive'
+            });
+            res.flushHeaders();
+            if (req.query && req.query.reqStockName)
+                res.write("req stock name " + req.query.reqStockName);
+            return [2 /*return*/];
+        });
+    });
+});
+;
 app.post('/scrap-service', function (req, res) {
     console.log('scrap-service');
     var csvData = [];
@@ -239,7 +235,7 @@ app.post('/scrap-service', function (req, res) {
                     if (!!csvData_1_1.done) return [3 /*break*/, 5];
                     itCsv = csvData_1_1.value;
                     _a = itCsv;
-                    return [4 /*yield*/, Service.getOrderByUrl(itCsv.URL)];
+                    return [4 /*yield*/, scrap.getOrderByUrl(itCsv.URL)];
                 case 3:
                     _a.Orders = _c.sent();
                     itCsv.Count = 0; //itCsv.Orders.match(/\d+/g);
@@ -260,7 +256,7 @@ app.post('/scrap-service', function (req, res) {
                     }
                     finally { if (e_5) throw e_5.error; }
                     return [7 /*endfinally*/];
-                case 8: return [4 /*yield*/, Service.writeCsvData(csvData)];
+                case 8: return [4 /*yield*/, scrap.writeCsvData(csvData)];
                 case 9:
                     _c.sent();
                     return [2 /*return*/];
